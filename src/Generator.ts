@@ -15,6 +15,18 @@ export default class Generator {
     this.loader = new Loader(this.requestsPath)
   }
 
+  public getRequestsPath(): string {
+    return this.requestsPath
+  }
+
+  public getGeneratedPath(): string {
+    return this.generatedPath
+  }
+  public getFileName(): string {
+    return this.fileName
+  }
+
+
   public async generate() {
     const content = await this.loader.load();
 
