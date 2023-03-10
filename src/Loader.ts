@@ -16,14 +16,14 @@ export default class Loader {
     const files = await this.readFiles(this.requestsPath)
     const parser = new Engine({})
 
-    let content = 'const yup = require(\'yup\');\n\n'
+    let content = 'import * as yup from \'yup\'\n\n'
 
     for (const [name, file] of Object.entries(files)) {
       const ast = parser.parseCode(file, 'php')
       const item = this.parseItem(ast)
       const validationSchema = this.converter.convert(item)
 
-      content +=  `exports.${name} = ${validationSchema};\n`
+      content +=  `export const ${name} = ${validationSchema}\n`
     }
 
     return content

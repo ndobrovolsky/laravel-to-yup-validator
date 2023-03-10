@@ -1,9 +1,9 @@
 import Generator from './Generator';
 
-export default function laravelToYup(requestPath: string = 'app/Http/Requests', generatedPath: string | null = null, fileName: string = 'index') {
+export default function laravelToYup(requestPath: string = 'app/Http/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index') {
   let exitHandlersBound: boolean = false
 
-  const generator = new Generator(requestPath, generatedPath || __dirname + '/generated', fileName)
+  const generator = new Generator(requestPath, generatedPath, fileName)
 
   const clean = () => {
     generator.reset(true)
