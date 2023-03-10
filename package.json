@@ -23,7 +23,7 @@
     "build:plugins": "tsc -p tsconfig.plugins.json",
     "build:client": "tsc -p tsconfig.json",
     "build:cjs": "tsc -p tsconfig.commonjs.json",
-    "build": "npm run build:plugins && npm run build:client && npm run build:cjs",
+    "build": "tsc -p tsconfig.json",
     "prepare": "npm run build",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },
