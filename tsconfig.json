@@ -15,7 +15,6 @@
     "node_modules",
     "src/vite.ts",
     "src/mix.ts",
-    "src/loader.ts",
   ],
   "rules": {
     "no-console": false
