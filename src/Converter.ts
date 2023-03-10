@@ -1,13 +1,8 @@
 
-import { Schema, object } from 'yup'
 import makeRule from './rules/'
 
-export interface ValidationData {
-    [key: string]: string | string[]
-}
-
 export default class Converter {
-    public convert(validationData: ValidationData): string {
+    public convert(validationData: {[key: string]: string | string[]}): string {
         let shape = ''
 
         for (const [key, value] of Object.entries(validationData)) {

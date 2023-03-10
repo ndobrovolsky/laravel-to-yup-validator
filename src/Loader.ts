@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { Engine, Program } from 'php-parser'
-import Converter, { ValidationData } from './Converter'
+import Converter from './Converter'
 
 export default class Loader {
   private requestsPath: string

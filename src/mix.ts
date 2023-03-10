@@ -1,11 +1,9 @@
-import path from 'path'
-import fs from 'fs'
-
 import mix from 'laravel-mix'
 import { Component } from 'laravel-mix/src/components/Component'
 import { EnvironmentPlugin, Configuration } from 'webpack'
 
-import { generateFiles, parseAll, hasPhpFiles } from './loader'
+import { hasPhpFiles } from './utils'
+import Generator from '../src/Generator';
 
 class BeforeBuildPlugin {
   callback: Function
@@ -23,14 +21,18 @@ mix.extend(
   'laravelToYup',
   class extends Component {
     requestPath: string
+    generatedPath: string
+    fileName: string
     context: any
 
-    register(requestPath: string = 'app/HTTP/Requests'): void {
-      this.requestPath = this.context.paths.rootPath + path.sep + requestPath
+    register(requestPath: string = 'app/HTTP/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index'): void {
+      this.requestPath = requestPath
+      this.generatedPath = generatedPath
+      this.fileName = fileName
     }
 
     webpackConfig(config: Configuration): void {
-      let files = []
+      const generator = new Generator(this.requestPath, this.generatedPath, this.fileName)
 
       config.watchOptions = {
         ignored: /php.*\.json/
@@ -46,20 +48,12 @@ mix.extend(
 
       config.plugins.push(
         new BeforeBuildPlugin(() => {
-          files = generateFiles(this.requestPath, [...parseAll(this.requestPath)])
+          generator.generate()
         })
       )
 
       this.context.listen('build', () => {
-        files.forEach((file) => {
-          if (fs.existsSync(this.requestPath + file.name)) {
-            fs.unlinkSync(this.requestPath + file.name)
-          }
-        })
-
-        if (fs.existsSync(this.requestPath) && fs.readdirSync(this.requestPath).length < 1) {
-          fs.rmdirSync(this.requestPath)
-        }
+        generator.reset(true)
       })
     }
   }

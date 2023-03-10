@@ -1,22 +1,12 @@
-import path from 'path'
-import { existsSync, unlinkSync, readdirSync, rmdirSync } from 'fs'
-import { parseAll, hasPhpFiles, generateFiles } from './loader'
-import { ParsedRequestInterface } from './interfaces/parsed-request'
+import { hasPhpFiles } from './utils'
+import Generator from '../src/Generator';
 
-export default function laravelToYup(requestPath: string = 'app/HTTP/Requests') {
-  requestPath = requestPath.replace(/[\\/]$/, '') + path.sep
-
-  let files: ParsedRequestInterface[] = []
+export default function laravelToYup(requestPath: string = 'app/HTTP/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index') {
   let exitHandlersBound: boolean = false
-
+  const generator = new Generator(requestPath, generatedPath, fileName)
+  
   const clean = () => {
-    files.forEach((file) => unlinkSync(requestPath + file.name))
-
-    files = []
-
-    if (existsSync(requestPath) && readdirSync(requestPath).length < 1) {
-      rmdirSync(requestPath)
-    }
+    generator.reset(true)
   }
 
   return {
@@ -27,7 +17,7 @@ export default function laravelToYup(requestPath: string = 'app/HTTP/Requests') 
         return
       }
 
-      files = generateFiles(requestPath, [...parseAll(requestPath)])
+      generator.generate()
 
       /** @ts-ignore */
       process.env.VITE_LARAVEL_TO_YUP_HAS_PHP = true
@@ -38,13 +28,13 @@ export default function laravelToYup(requestPath: string = 'app/HTTP/Requests') 
         }
       }
     },
-    buildEnd: clean,
+    //buildEnd: clean,
     handleHotUpdate(ctx) {
       if (new RegExp(`/${requestPath}\/.*\.php$/`).test(ctx.file)) {
-        files = generateFiles(requestPath, [...parseAll(requestPath)])
+        generator.generate()
       }
     },
-    configureServer(server) {
+    configureServer() {
       if (exitHandlersBound) {
         return
       }
