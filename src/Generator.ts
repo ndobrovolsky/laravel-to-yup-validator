@@ -31,7 +31,7 @@ export default class Generator {
     const content = await this.loader.load();
 
     if (!fs.existsSync(this.generatedPath)) {
-      fs.mkdirSync(this.generatedPath)
+      fs.mkdirSync(this.generatedPath, { recursive: true })
     } else {
       this.reset()
     }
@@ -47,6 +47,6 @@ export default class Generator {
     }
 
     if (removeDir)
-      fs.rmdirSync(this.generatedPath)
+      fs.rmdirSync(this.generatedPath, { recursive: true })
   }
 }
