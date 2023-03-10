@@ -1,9 +1,9 @@
 import Generator from './Generator';
 
-export default function laravelToYup(requestPath: string = 'app/HTTP/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index') {
+export default function laravelToYup(requestPath: string = 'app/Http/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index') {
   let exitHandlersBound: boolean = false
   const generator = new Generator(requestPath, generatedPath, fileName)
-  
+
   const clean = () => {
     generator.reset(true)
   }
@@ -25,11 +25,15 @@ export default function laravelToYup(requestPath: string = 'app/HTTP/Requests', 
       }
     },
     //buildEnd: clean,
-    handleHotUpdate(ctx) {
-      if (new RegExp(`/${requestPath}\/.*\.php$/`).test(ctx.file)) {
-        generator.generate()
+    handleHotUpdate({ file, server }) {
+      if (new RegExp(`/${requestPath}\/.*\.php$/`).test(file)) {
+        server.ws.send({
+          type: 'full-reload',
+          path: '*'
+        });
       }
     },
+
     configureServer() {
       if (exitHandlersBound) {
         return
