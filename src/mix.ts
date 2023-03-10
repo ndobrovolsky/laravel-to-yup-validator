@@ -1,6 +1,6 @@
 import mix from 'laravel-mix'
 import { Component } from 'laravel-mix/src/components/Component'
-import { EnvironmentPlugin, Configuration } from 'webpack'
+import { Configuration } from 'webpack'
 import Generator from './Generator';
 
 class BeforeBuildPlugin {
@@ -23,9 +23,9 @@ mix.extend(
     fileName: string
     context: any
 
-    register(requestPath: string = 'app/HTTP/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index'): void {
+    register(requestPath: string = 'app/Http/Requests', generatedPath: string | null = null, fileName: string = 'index'): void {
       this.requestPath = requestPath
-      this.generatedPath = generatedPath
+      this.generatedPath = generatedPath || __dirname + '/generated'
       this.fileName = fileName
     }
 
@@ -35,12 +35,6 @@ mix.extend(
       config.watchOptions = {
         ignored: /php.*\.json/
       }
-
-      config.plugins.push(
-        new EnvironmentPlugin({
-          LARAVEL_TO_YUP_HAS_PHP: true
-        })
-      )
 
       config.plugins.push(
         new BeforeBuildPlugin(() => {

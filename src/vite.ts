@@ -1,9 +1,10 @@
 import Generator from './Generator';
 
-export default function laravelToYup(requestPath: string = 'app/Http/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index') {
+export default function laravelToYup(requestPath: string = 'app/Http/Requests', generatedPath: string | null = null, fileName: string = 'index') {
   let exitHandlersBound: boolean = false
-  const generator = new Generator(requestPath, generatedPath, fileName)
-  
+
+  const generator = new Generator(requestPath, generatedPath || __dirname + '/generated', fileName)
+
   const clean = () => {
     generator.reset(true)
   }
@@ -12,25 +13,16 @@ export default function laravelToYup(requestPath: string = 'app/Http/Requests', 
     name: 'laravelToYup',
     enforce: 'post',
     config() {
-
       generator.generate()
-
-      /** @ts-ignore */
-      process.env.VITE_LARAVEL_TO_YUP_HAS_PHP = true
-
-      return {
-        define: {
-          'process.env.VITE_LARAVEL_TO_YUP_HAS_PHP': true
-        }
-      }
     },
     //buildEnd: clean,
     handleHotUpdate(ctx) {
-      if (new RegExp(`/${generator.getRequestsPath()}\/.*\.php$/`).test(ctx.file)) {
-        generator.generate()
+      const regexPath = generator.getRequestsPath().replace(/\//g, '\\/');
+      if (new RegExp(`${regexPath}.*\.php$`).test(ctx.file)) {
+        generator.generate();
       }
     },
-    
+
     configureServer() {
       if (exitHandlersBound) {
         return
