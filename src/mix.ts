@@ -1,8 +1,6 @@
 import mix from 'laravel-mix'
 import { Component } from 'laravel-mix/src/components/Component'
 import { EnvironmentPlugin, Configuration } from 'webpack'
-
-import { hasPhpFiles } from './utils'
 import Generator from '../src/Generator';
 
 class BeforeBuildPlugin {
@@ -38,13 +36,11 @@ mix.extend(
         ignored: /php.*\.json/
       }
 
-      if (hasPhpFiles(this.requestPath)) {
-        config.plugins.push(
-          new EnvironmentPlugin({
-            LARAVEL_TO_YUP_HAS_PHP: true
-          })
-        )
-      }
+      config.plugins.push(
+        new EnvironmentPlugin({
+          LARAVEL_TO_YUP_HAS_PHP: true
+        })
+      )
 
       config.plugins.push(
         new BeforeBuildPlugin(() => {

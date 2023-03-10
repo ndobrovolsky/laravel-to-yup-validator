@@ -1,4 +1,3 @@
-import { hasPhpFiles } from './utils'
 import Generator from '../src/Generator';
 
 export default function laravelToYup(requestPath: string = 'app/HTTP/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index') {
@@ -13,9 +12,6 @@ export default function laravelToYup(requestPath: string = 'app/HTTP/Requests', 
     name: 'laravelToYup',
     enforce: 'post',
     config() {
-      if (!hasPhpFiles(requestPath)) {
-        return
-      }
 
       generator.generate()
 
