@@ -24,10 +24,9 @@ class TestRequest extends FormRequest
     public function rules()
     {
         return [
-            'val-string' => ['required', 'string', 'min:3', 'max:5'],
-            'val-integer' => ['required', 'integer', 'size:1'],
-            'val-boolean' => ['required', 'boolean'],
-            'custom' => ['required', 'string', new Uppercase],
+            'val-string' => 'required|string|min:3|max:5',
+            'val-integer' => 'required|integer|size:1',
+            'val-boolean' => 'required|boolean',
             /* 'array' => 'required|array',
             'date' => 'required|date',
             'email' => 'required|email',

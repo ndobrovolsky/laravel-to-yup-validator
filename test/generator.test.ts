@@ -1,11 +1,14 @@
-import Loader from '../src/Loader';
+import Generator from '../src/Generator';
 
 /* beforeEach(() => reset(__dirname + '/fixtures/requests/')); */
 
 it('creates a file for each requests', async () => {
     const requestsPath = __dirname + '/fixtures/requests/';
-    const loader = new Loader(requestsPath);
-    const requests = await loader.load();
+    const genrationPath = __dirname + '/fixtures/generated/';
+    const generator = new Generator(requestsPath, genrationPath, 'validation');
+    await generator.generate();
+
+    const validation = require(genrationPath + 'validation.js');
 
 
     /* const requestsPath = __dirname + '/fixtures/requests/';

@@ -1,48 +1,47 @@
 import path from 'path'
-import { existsSync, writeFileSync, unlinkSync, readdirSync, rmdirSync } from 'fs'
-import { parseAll, hasPhpTranslations, generateFiles } from './loader'
-import { ParsedLangFileInterface } from './interfaces/parsed-lang-file'
+import { existsSync, unlinkSync, readdirSync, rmdirSync } from 'fs'
+import { parseAll, hasPhpFiles, generateFiles } from './loader'
+import { ParsedRequestInterface } from './interfaces/parsed-request'
 
-export default function i18n(langPath: string = 'lang') {
-  langPath = langPath.replace(/[\\/]$/, '') + path.sep
+export default function laravelToYup(requestPath: string = 'app/HTTP/Requests') {
+  requestPath = requestPath.replace(/[\\/]$/, '') + path.sep
 
-  const frameworkLangPath = 'vendor/laravel/framework/src/Illuminate/Translation/lang/'.replace('/', path.sep)
-  let files: ParsedLangFileInterface[] = []
+  let files: ParsedRequestInterface[] = []
   let exitHandlersBound: boolean = false
 
   const clean = () => {
-    files.forEach((file) => unlinkSync(langPath + file.name))
+    files.forEach((file) => unlinkSync(requestPath + file.name))
 
     files = []
 
-    if (existsSync(langPath) && readdirSync(langPath).length < 1) {
-      rmdirSync(langPath)
+    if (existsSync(requestPath) && readdirSync(requestPath).length < 1) {
+      rmdirSync(requestPath)
     }
   }
 
   return {
-    name: 'i18n',
+    name: 'laravelToYup',
     enforce: 'post',
-    config(config) {
-      if (!hasPhpTranslations(frameworkLangPath) && !hasPhpTranslations(langPath)) {
+    config() {
+      if (!hasPhpFiles(requestPath)) {
         return
       }
 
-      files = generateFiles(langPath, [...parseAll(frameworkLangPath), ...parseAll(langPath)])
+      files = generateFiles(requestPath, [...parseAll(requestPath)])
 
       /** @ts-ignore */
-      process.env.VITE_LARAVEL_VUE_I18N_HAS_PHP = true
+      process.env.VITE_LARAVEL_TO_YUP_HAS_PHP = true
 
       return {
         define: {
-          'process.env.LARAVEL_VUE_I18N_HAS_PHP': true
+          'process.env.VITE_LARAVEL_TO_YUP_HAS_PHP': true
         }
       }
     },
     buildEnd: clean,
     handleHotUpdate(ctx) {
-      if (/lang\/.*\.php$/.test(ctx.file)) {
-        files = generateFiles(langPath, [...parseAll(frameworkLangPath), ...parseAll(langPath)])
+      if (new RegExp(`/${requestPath}\/.*\.php$/`).test(ctx.file)) {
+        files = generateFiles(requestPath, [...parseAll(requestPath)])
       }
     },
     configureServer(server) {

@@ -1,31 +1,41 @@
+import Converter from '../src/Converter';
 import Loader from '../src/Loader';
 
-/* beforeEach(() => reset(__dirname + '/fixtures/requests/')); */
+/* it('convert string validation rules to yup', async () => {
+    const validationData = {
+        'val-string': 'required|string|min:3|max:5',
+        'val-integer': 'required|integer|size:1',
+        'val-boolean': 'required|boolean',
+      };
+      
+      const converter = new Converter(validationData);
+      const validationSchema = converter.convert();
+      
+});
 
-it('creates a file for each requests', async () => {
+it('convert array validation rules to yup', async () => {
+    const validationData = {
+        'val-string': ['required', 'string', 'min:3', 'max:5'],
+        'val-integer': ['required', 'integer', 'size:1'],
+        'val-boolean': ['required', 'boolean'],
+      };
+      
+      const converter = new Converter(validationData);
+      const validationSchema = converter.convert();
+      
+}); */
+
+/* it('creates a file for each requests', async () => {
     const requestsPath = __dirname + '/fixtures/requests/';
     const loader = new Loader(requestsPath);
     const requests = await loader.load();
 
-
-    /* const requestsPath = __dirname + '/fixtures/requests/';
-    await parseAll(requestsPath); */
-    /* const files = generateFiles(requestsPath, parseAll(requestsPath));
-
-    expect(files.length).toBe(3);
-    expect(files[0].name).toBe('php_en.json');
-    expect(files[1].name).toBe('php_fr.json');
-    expect(files[2].name).toBe('php_pt.json');
-
-    const requestsEn = JSON.parse(fs.readFileSync(requestsPath + files[0].name).toString());
-    expect(requestsEn['auth.failed']).toBe('These credentials do not match our records.');
-    expect(requestsEn['auth.foo.level1.level2']).toBe('baren');
-    expect(requestsEn['auth.multiline']).toBe('Lorem ipsum dolor sit amet.');
-
-    const requestsPt = JSON.parse(fs.readFileSync(requestsPath + files[2].name).toString());
-    expect(requestsPt['auth.failed']).toBe('As credenciais indicadas não coincidem com as registadas no sistema.');
-    expect(requestsPt['auth.foo.level1.level2']).toBe('barpt'); */
-});
+    for (const key of Object.keys(requests)) {
+        const request = requests[key];
+        const converter = new Converter(request);
+        const validationSchema = converter.convert();
+    }
+}); */
 
 /* it('includes .php requests file in subdirectory in .json', () => {
     const requestsPath = __dirname + '/fixtures/requests/';

@@ -5,7 +5,7 @@ import mix from 'laravel-mix'
 import { Component } from 'laravel-mix/src/components/Component'
 import { EnvironmentPlugin, Configuration } from 'webpack'
 
-import { generateFiles, parseAll, hasPhpFiles } from './loader'
+import { generateFiles, parseAll, hasPhpTranslations } from './loader'
 
 class BeforeBuildPlugin {
   callback: Function
@@ -20,13 +20,18 @@ class BeforeBuildPlugin {
 }
 
 mix.extend(
-  'laravelToYup',
+  'i18n',
   class extends Component {
-    requestPath: string
+    langPath: string
+    frameworkLangPath: string
     context: any
 
-    register(requestPath: string = 'app/HTTP/Requests'): void {
-      this.requestPath = this.context.paths.rootPath + path.sep + requestPath
+    register(langPath: string = 'lang'): void {
+      this.langPath = this.context.paths.rootPath + path.sep + langPath
+      this.frameworkLangPath =
+        this.context.paths.rootPath +
+        path.sep +
+        'vendor/laravel/framework/src/Illuminate/Translation/lang/'.replace('/', path.sep)
     }
 
     webpackConfig(config: Configuration): void {
@@ -36,29 +41,29 @@ mix.extend(
         ignored: /php.*\.json/
       }
 
-      if (hasPhpFiles(this.requestPath)) {
+      if (hasPhpTranslations(this.langPath)) {
         config.plugins.push(
           new EnvironmentPlugin({
-            LARAVEL_TO_YUP_HAS_PHP: true
+            LARAVEL_VUE_I18N_HAS_PHP: true
           })
         )
       }
 
       config.plugins.push(
         new BeforeBuildPlugin(() => {
-          files = generateFiles(this.requestPath, [...parseAll(this.requestPath)])
+          files = generateFiles(this.langPath, [...parseAll(this.frameworkLangPath), ...parseAll(this.langPath)])
         })
       )
 
       this.context.listen('build', () => {
         files.forEach((file) => {
-          if (fs.existsSync(this.requestPath + file.name)) {
-            fs.unlinkSync(this.requestPath + file.name)
+          if (fs.existsSync(this.langPath + file.name)) {
+            fs.unlinkSync(this.langPath + file.name)
           }
         })
 
-        if (fs.existsSync(this.requestPath) && fs.readdirSync(this.requestPath).length < 1) {
-          fs.rmdirSync(this.requestPath)
+        if (fs.existsSync(this.langPath) && fs.readdirSync(this.langPath).length < 1) {
+          fs.rmdirSync(this.langPath)
         }
       })
     }

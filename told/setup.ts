@@ -1,8 +1,8 @@
-/* import { mount } from '@vue/test-utils'
-import { i18nVue } from '../src' */
-/* import { generateFiles, parseAll } from '../src/loader' */
+import { mount } from '@vue/test-utils'
+import { i18nVue } from '../src'
+import { generateFiles, parseAll } from '../src/loader'
 
-/* global.mountPlugin = async (template = '<div />', lang = 'pt', fallbackLang = 'pt', fallbackMissingTranslations = false) => {
+global.mountPlugin = async (template = '<div />', lang = 'pt', fallbackLang = 'pt', fallbackMissingTranslations = false) => {
   const wrapper = mount({ template }, {
     global: {
       plugins: [[i18nVue, {
@@ -33,13 +33,13 @@ global.mountPluginWithRequire = async (template = '<div />', lang = 'pt', fallba
   await new Promise(resolve => setTimeout(resolve))
 
   return wrapper;
-} */
+}
 
-/* global.mixLoader = () => {
-  const requestsPath = __dirname + '/fixtures/requests/';
-  generateFiles(requestsPath, parseAll(requestsPath));
+global.mixLoader = () => {
+  const langPath = __dirname + '/fixtures/lang/';
+  generateFiles(langPath, parseAll(langPath));
 
   process.env = Object.assign(process.env, {
     LARAVEL_VUE_I18N_HAS_PHP: 'true',
   });
-} */
+}
