@@ -1,7 +1,7 @@
 import mix from 'laravel-mix'
 import { Component } from 'laravel-mix/src/components/Component'
 import { EnvironmentPlugin, Configuration } from 'webpack'
-import Generator from '../src/Generator';
+import Generator from './Generator';
 
 class BeforeBuildPlugin {
   callback: Function

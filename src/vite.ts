@@ -1,4 +1,4 @@
-import Generator from '../src/Generator';
+import Generator from './Generator';
 
 export default function laravelToYup(requestPath: string = 'app/HTTP/Requests', generatedPath: string = 'resources/js/vendor/laravel-to-yup', fileName: string = 'index') {
   let exitHandlersBound: boolean = false
