@@ -4,30 +4,27 @@ import { ValidationData, ValidationObject } from './interfaces'
 
 export default class Converter {
     public convert(data: ValidationData): string {
-        let rulesParsed = this.parse(data)
-        return this.createSchema(rulesParsed)
+        try {
+            let rulesParsed = this.parse(data)
+            return this.createSchema(rulesParsed)
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     private parse(data: ValidationData): ValidationObject {
         let parsed = {}
 
         for (const [name, value] of Object.entries(data)) {
-            if(name === 'options.*.body'){
-                console.log(name)
-            }
             const rules = this.ruleToArray(value).filter((rule) => typeof rule === 'string')
             const nameParts = name.split('.')
-            try{
-                parsed = this.buildValidationObject(nameParts, rules, parsed)
-            } catch (e) {
-                console.log(e)
-            }
+            parsed = this.buildValidationObject(nameParts, rules, parsed)
         }
 
         return parsed
     }
 
-    private ruleToArray(name: string | string[] ): string[] {
+    private ruleToArray(name: string | string[]): string[] {
         if (typeof name === 'string')
             return name.split('|')
         else
@@ -63,12 +60,12 @@ export default class Converter {
     }
 
     private makeEmptyValidationObject(
-        name: string, 
-        object: ValidationObject = {}, 
-        rules: string[] | null = [], 
+        name: string,
+        object: ValidationObject = {},
+        rules: string[] | null = [],
         children: ValidationObject | null = null
     ): ValidationObject {
-        
+
         object[name] = {
             rules,
             children
@@ -81,7 +78,7 @@ export default class Converter {
             acc += `\n\t'${name}': ${makeRule(value).getSchema()},`
             return acc
         }, '')
-    
+
         return `yup.object({${shape}\n})`
     }
 

@@ -7,6 +7,9 @@ export default class String extends BaseRule {
         'min',
         'max',
         'length',
+        'in',
+        'not_in',
+        'email',
     ]
 
     public getSchema(): string {

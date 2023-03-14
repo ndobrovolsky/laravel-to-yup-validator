@@ -127,19 +127,22 @@ function getType(rule) {
 
 
 it('test validator', async () => {
-    let rules = [
-       /*  { name: 'val-string', rules: ['required', 'string', 'min:3', 'max:5'] },
-        { name: 'val-integer', rules: ['required', 'integer', 'size:1'] },
-        { name: 'val-boolean', rules: ['required', 'boolean'] },
-        { name: 'val-array', rules: ['required', 'array'] },
-        { name: 'val-array.*.attr-1', rules: ['integer'] },
-        { name: 'val-array.*.attr-2', rules: ['string'] }, */
-
-        { name: 'val-array-2', rules: ['required', 'array:attr-1, attr-2'] },
-
-        { name: 'val-object', rules: ['required', 'array'] },
-        { name: 'val-object.object-integer', rules: ['integer'] },
-        { name: 'val-object.object-string', rules: ['string'] },
+    let rules = [ 
+        { name: 'body', rules: ['required', 'string'] },
+        { name: 'type', rules: ['required', 'string', 'in:select, true_false, matching'] },
+        { name: 'question_category_id', rules: ['nullable', 'integer', 'exists:question_categories,id'] },
+        { name: 'test_id', rules: ['nullable', 'integer', 'exists:tests,id'] },
+        { name: 'settings', rules: ['required', 'array'] },
+        { name: 'settings.points', rules: ['required', 'integer'] },
+        { name: 'settings.numeration_style', rules: ['required', 'string', 'in:roman,alphabet,decimal,none'] },
+        { name: 'settings.shuffle_options', rules: ['nullable', 'boolean'] },
+        { name: 'settings.shuffle_level', rules: ['nullable', 'string', 'in:matches,clues,full'] },
+        { name: 'settings.multiple_select', rules: ['nullable', 'boolean'] },
+        { name: 'settings.grading_scale', rules: ['nullable', 'string', 'in:deduction, no_deduction'] },
+        { name: 'options', rules: ['required', 'array'] },
+        { name: 'options.*.body', rules: ['required', 'string'] },
+        { name: 'options.*.is_correct', rules: ['nullable', 'boolean'] },
+        { name: 'options.*.matching_option', rules: ['nullable', 'string'] },
     ]
 
     let rulesParsed = parseRules(rules)

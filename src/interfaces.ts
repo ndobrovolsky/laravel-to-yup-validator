@@ -12,5 +12,5 @@ export interface ValidationObject {
 }
 
 export interface SubRule {
-    name: string, args: any[]
+    name: string, args: any
 }

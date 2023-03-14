@@ -21,10 +21,10 @@ export default class BaseRule {
         let subRules = ''
         for(const rule of this.rules) {
             if (rule && typeof rule === 'string') {
-                const [ruleName, ruleValue] = rule.split(':')
+                const [ruleName, ruleValue] = rule.split(':').map(value => value.trim())
                 const subRule = this.getSubRule(ruleName, ruleValue)
                 if (subRule)
-                    subRules += `.${subRule.name}(${subRule.args.map(arg => `'${arg}'`).join(', ')})`
+                    subRules += `.${subRule.name}(${subRule.args})`
             }
         }
 
@@ -37,15 +37,19 @@ export default class BaseRule {
 
         switch (ruleName) {
             case 'required':
-                return { name: 'required', args: [] }
+                return { name: 'required', args: '' }
             case 'min':
-                return { name: 'min', args: [Number(ruleValue)] }
+                return { name: 'min', args: Number(ruleValue) }
             case 'max':
-                return { name: 'max', args: [Number(ruleValue)] }
-            case 'size':
-                return { name: 'test', args: [`len:${ruleValue}`, '${path} must be of size ${size}'] }
+                return { name: 'max', args: Number(ruleValue) }
             case 'nullable':
-                return { name: 'nullable', args: [] }
+                return { name: 'nullable', args: '' }
+            case 'in':
+                return { name: 'oneOf', args: `[${ruleValue.split(',').map(value => `'${value.trim()}'`)}]` }
+            case 'not_in':
+                return { name: 'notOneOf', args: `[${ruleValue.split(',').map(value => `'${value.trim()}'`)}]` }
+            case 'email':
+                return { name: 'email', args: '' }
             default:
                 return null
         }
