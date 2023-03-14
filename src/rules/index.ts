@@ -2,22 +2,23 @@ import { RuleObject, ValidationObject } from '../interfaces'
 import String from './String'
 import Number from './Number'
 import Integer from './Integer'
+import Boolean from './Boolean'
 import BaseRule from './BaseRule'
 import Array from './Array'
 
-const supportedRules = [
-    'string',
-    'numeric',
-    'integer',
-    'array',
-]
+const ruleClasses = {
+    'string': String,
+    'numeric': Number,
+    'integer': Integer,
+    'boolean': Boolean,
+}
 
-function getName(rules: string[]): string {
+function getRuleInstance(rules: string[]): BaseRule {
     for (const rule of rules) {
-        if (supportedRules.includes(rule))
-            return rule;
+        if (Object.keys(ruleClasses).includes(rule))
+            return new ruleClasses[rule](rules);
     }
-    return ''
+    return new BaseRule(rules)
 }
 
 export default function makeRule(rule: RuleObject): BaseRule {
@@ -25,16 +26,6 @@ export default function makeRule(rule: RuleObject): BaseRule {
     const children = rule.children
     if(children && Object.keys(children).length > 0) return new Array(rules, children)
     
-    const name = getName(rules)
-    switch (name) {
-        case 'string':
-            return new String(rules)
-        case 'numeric':
-            return new Number(rules)
-        case 'integer':
-            return new Integer(rules)
-        default:
-            return new BaseRule(rules)
-    }
+    return getRuleInstance(rules)
 }
 
