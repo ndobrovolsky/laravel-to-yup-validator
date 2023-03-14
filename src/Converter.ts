@@ -12,9 +12,16 @@ export default class Converter {
         let parsed = {}
 
         for (const [name, value] of Object.entries(data)) {
+            if(name === 'options.*.body'){
+                console.log(name)
+            }
             const rules = this.ruleToArray(value).filter((rule) => typeof rule === 'string')
             const nameParts = name.split('.')
-            parsed = this.buildValidationObject(nameParts, rules, parsed)
+            try{
+                parsed = this.buildValidationObject(nameParts, rules, parsed)
+            } catch (e) {
+                console.log(e)
+            }
         }
 
         return parsed
@@ -29,8 +36,8 @@ export default class Converter {
 
     private buildValidationObject(nameParts: string[], rules: string[], acc: ValidationObject = {}) {
         const name = nameParts.shift()
-        if (!acc[name]) {
-            acc = this.makeEmptyValidationObject(name, acc)
+        if (!acc || !acc[name]) {
+            acc = this.makeEmptyValidationObject(name, acc || {})
         }
 
         if (nameParts.length > 0) {

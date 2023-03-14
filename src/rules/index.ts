@@ -23,8 +23,9 @@ function getName(rules: string[]): string {
 export default function makeRule(rule: RuleObject): BaseRule {
     const rules = rule.rules
     const children = rule.children
+    if(children && Object.keys(children).length > 0) return new Array(rules, children)
+    
     const name = getName(rules)
-
     switch (name) {
         case 'string':
             return new String(rules)
@@ -32,8 +33,6 @@ export default function makeRule(rule: RuleObject): BaseRule {
             return new Number(rules)
         case 'integer':
             return new Integer(rules)
-        case 'array':
-            return new Array(rules, children)
         default:
             return new BaseRule(rules)
     }
