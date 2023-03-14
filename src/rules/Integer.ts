@@ -1,6 +1,6 @@
 import BaseRule from './BaseRule'
 
-export default class String extends BaseRule {
+export default class Integer extends BaseRule {
     protected allowedSubrules: string[] = [
         'required',
         'nullable',
@@ -10,6 +10,6 @@ export default class String extends BaseRule {
     ]
 
     public getSchema(): string {
-        return 'yup.string()' + this.getSubRules()
+        return 'yup.number().integer()' + this.getSubRules()
     }
 }

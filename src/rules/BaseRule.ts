@@ -1,25 +1,25 @@
-interface SubRule {
-    name: string, args: any[]
-}
+import { ValidationObject, SubRule } from '../interfaces'
 
 export default class BaseRule {
     protected rules: string[]
+    protected children: ValidationObject | null = null
     protected allowedSubrules: string[] = [
         'required',
         'nullable',
     ]
 
-    constructor(rules: string[]) {
+    constructor(rules: string[], children: ValidationObject | null = null) {
         this.rules = rules
+        this.children = children
     }
 
     public getSchema(): string {
-        return 'yup.mixed()' + this.getSubRules(this.rules)
+        return 'yup.mixed()' + this.getSubRules()
     }
 
-    protected getSubRules(rules: string[]): string {
+    protected getSubRules(): string {
         let subRules = ''
-        for(const rule of rules) {
+        for(const rule of this.rules) {
             if (rule && typeof rule === 'string') {
                 const [ruleName, ruleValue] = rule.split(':')
                 const subRule = this.getSubRule(ruleName, ruleValue)
@@ -44,6 +44,8 @@ export default class BaseRule {
                 return { name: 'max', args: [Number(ruleValue)] }
             case 'size':
                 return { name: 'test', args: [`len:${ruleValue}`, '${path} must be of size ${size}'] }
+            case 'nullable':
+                return { name: 'nullable', args: [] }
             default:
                 return null
         }
